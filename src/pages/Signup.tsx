@@ -19,37 +19,48 @@ export default function Signup() {
   const [confirm, setConfirm] = useState("");
   const [agreed, setAgreed] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const submit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!name || !email || !password)
-    return toast.error("Please fill in all fields");
+    if (!name || !email || !password)
+      return toast.error("Please fill in all fields");
 
-  if (password !== confirm)
-    return toast.error("Passwords do not match");
+    if (password !== confirm)
+      return toast.error("Passwords do not match");
 
-  if (!agreed)
-    return toast.error("Please accept the terms");
+    if (!agreed)
+      return toast.error("Please accept the terms");
 
-  // 🔥 Supabase signup
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-  });
+    setIsLoading(true);
+    try {
+      // 🔥 Supabase signup
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          },
+        },
+      });
 
-  if (error) {
-    toast.error(error.message);
-    return;
-  }
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
 
-  // OPTIONAL: store name in your database later
-  // (Supabase auth only stores email/password by default)
-
-  login(email, name);
-  toast.success("Account created!");
-
-  navigate("/home");
-};
+      login(email, name);
+      toast.success("Account created!");
+      navigate("/home");
+    } catch (err: any) {
+      console.error("Signup fetch error:", err);
+      toast.error(err.message || "Failed to connect to authentication server.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <PhoneShell>
@@ -76,8 +87,13 @@ export default function Signup() {
               </span>
             </label>
 
-            <Button type="submit" size="lg" className="w-full h-14 gradient-primary border-0 hover:opacity-90 rounded-2xl">
-              Create Account
+            <Button 
+              type="submit" 
+              size="lg" 
+              className="w-full h-14 gradient-primary border-0 hover:opacity-90 rounded-2xl"
+              disabled={isLoading}
+            >
+              {isLoading ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
 
