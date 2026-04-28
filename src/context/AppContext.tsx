@@ -69,7 +69,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Fetch user data when user changes
   useEffect(() => {
     if (!user) return;
 
@@ -87,7 +86,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (setRes.data) {
           setSettings({ ...DEFAULT_SETTINGS, ...setRes.data });
         } else {
-          // Create default settings if they don't exist
           await supabase.from("settings").insert({ user_id: user.id, ...DEFAULT_SETTINGS });
         }
       } catch (err: any) {
