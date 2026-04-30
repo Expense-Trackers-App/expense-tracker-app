@@ -51,9 +51,14 @@ export default function Signup() {
         return;
       }
 
-      login(email, name);
-      toast.success("Account created!");
-      navigate("/home");
+      if (!data.session) {
+        toast.success("Please check your email to confirm your account!");
+        navigate("/login");
+      } else {
+        login(email, name);
+        toast.success("Account created!");
+        navigate("/home");
+      }
     } catch (err: any) {
       console.error("Signup fetch error:", err);
       toast.error(err.message || "Failed to connect to authentication server.");
