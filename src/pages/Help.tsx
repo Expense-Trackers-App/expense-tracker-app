@@ -6,7 +6,8 @@ import { useState } from "react";
 const faqs = [
   { q: "How do I add a new expense?", a: "Go to the Home tab and tap the big + button at the bottom center of the screen." },
   { q: "Can I change my currency?", a: "Yes, go to Settings > General > Currency and select your preferred currency." },
-  { q: "How are budgets calculated?", a: "Budgets are calculated per category on a monthly basis. You can set them up in the Budgets tab." }
+  { q: "How are budgets calculated?", a: "Budgets are calculated per category on a monthly basis. You can set them up in the Budgets tab." },
+  { q: "Can I delete an expense after adding it?", a: "Yes, open the expense details and tap the delete icon to remove it from your records." }
 ];
 
 export default function Help() {
