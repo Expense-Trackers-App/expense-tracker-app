@@ -61,7 +61,7 @@ export default function Login() {
     }
   };
 
-  const social = async (provider: "google" | "apple") => {
+  const social = async (provider: "google" | "facebook") => {
     const { error } = await supabase.auth.signInWithOAuth({ provider });
     if (error) toast.error(error.message);
   };
@@ -118,8 +118,8 @@ export default function Login() {
             <button onClick={() => social("google")} className="h-14 rounded-2xl bg-secondary/60 border border-border/50 flex items-center justify-center gap-2 hover:bg-secondary transition">
               <span className="font-medium">G  Google</span>
             </button>
-            <button onClick={() => social("apple")} className="h-14 rounded-2xl bg-secondary/60 border border-border/50 flex items-center justify-center gap-2 hover:bg-secondary transition">
-              <span className="font-medium"> Apple</span>
+            <button onClick={() => social("facebook")} className="h-14 rounded-2xl bg-secondary/60 border border-border/50 flex items-center justify-center gap-2 hover:bg-secondary transition">
+              <span className="font-medium">f  Facebook</span>
             </button>
           </div>
 
