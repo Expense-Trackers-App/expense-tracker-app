@@ -17,6 +17,7 @@ export interface Expense {
   date: string; // ISO
   notes?: string;
   paymentMethod: PaymentMethod;
+  receiptUrl?: string;
 }
 
 export interface Budget {
@@ -30,6 +31,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  avatar_url?: string;
 }
 
 export interface AppSettings {

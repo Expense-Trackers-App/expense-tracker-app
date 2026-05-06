@@ -29,7 +29,16 @@ export default function Settings() {
             </Select>
           </Row>
           <Row label="Language">
-            <span className="text-sm text-muted-foreground">{settings.language}</span>
+            <Select value={settings.language} onValueChange={(v) => updateSettings({ language: v })}>
+              <SelectTrigger className="h-9 w-32 bg-transparent border-0 p-0 justify-end gap-1 text-muted-foreground">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {["English", "Amharic", "Spanish", "French", "Arabic", "Chinese", "Hindi"].map((l) => (
+                  <SelectItem key={l} value={l}>{l}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </Row>
           <Row label="Dark Mode">
             <Switch checked={settings.darkMode} onCheckedChange={(v) => updateSettings({ darkMode: v })} />
@@ -44,7 +53,16 @@ export default function Settings() {
 
         <Section title="Others">
           <Row label={<span className="flex items-center gap-3"><Bell className="h-4 w-4" /> Notifications</span>}>
-            <Switch checked={settings.notifications} onCheckedChange={(v) => updateSettings({ notifications: v })} />
+            <Switch checked={settings.notifications} onCheckedChange={async (v) => {
+              if (v && "Notification" in window) {
+                const perm = await Notification.requestPermission();
+                if (perm !== "granted") {
+                  toast.error("Notification permission denied");
+                  return;
+                }
+              }
+              updateSettings({ notifications: v });
+            }} />
           </Row>
           <NavRow icon={HelpCircle} label="Help & Support" onClick={() => navigate("/settings/help")} />
           <NavRow icon={Info} label="About App" onClick={() => toast.info("PocketWise Pro v1.0.0")} />
@@ -52,9 +70,11 @@ export default function Settings() {
 
         <button
           onClick={() => {
-            logout();
-            navigate("/");
-            toast.success("Logged out");
+            if (window.confirm("Are you sure you want to log out?")) {
+              logout();
+              navigate("/");
+              toast.success("Logged out");
+            }
           }}
           className="w-full flex items-center justify-center gap-2 h-12 text-destructive font-semibold"
         >
