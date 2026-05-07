@@ -4,6 +4,8 @@ A modern, highly-polished, and cloud-synced personal finance tracking mobile app
 
 This application features a beautiful mobile-first design, interactive charts, and real-time database syncing to help you take control of your financial life seamlessly across all your devices.
 
+# 📄 [Expense Tracker App SDLC Document](https://drive.google.com/file/d/1-V60WEIjtJFCk1CEByx8lITHfn5VFUwM/view?usp=sharing)
+
 ## ✨ Key Features
 
 - **📊 Dynamic Dashboard**: Get a quick overview of your total balance, recent transactions, and monthly income vs. expense summary.
