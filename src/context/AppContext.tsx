@@ -44,6 +44,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           id: session.user.id,
           email: session.user.email ?? "",
           name: session.user.user_metadata?.full_name ?? session.user.email?.split("@")[0] ?? "User",
+          avatar_url: session.user.user_metadata?.avatar_url,
         });
       } else {
         setLoading(false);
@@ -56,6 +57,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           id: session.user.id,
           email: session.user.email ?? "",
           name: session.user.user_metadata?.full_name ?? session.user.email?.split("@")[0] ?? "User",
+          avatar_url: session.user.user_metadata?.avatar_url,
         });
       } else {
         setUser(null);
@@ -69,6 +71,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Toggle dark mode on html element
+  useEffect(() => {
+    if (settings.darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [settings.darkMode]);
+
+  // Fetch user data when user changes
   useEffect(() => {
     if (!user) return;
 
@@ -76,20 +88,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       try {
         const [expRes, budRes, setRes] = await Promise.all([
-          supabase.from("expenses").select("*").order("date", { ascending: false }),
+          supabase.from("expenses").select("*").order("created_at", { ascending: false }),
           supabase.from("budgets").select("*"),
           supabase.from("settings").select("*").maybeSingle()
         ]);
 
-        if (expRes.data) setExpenses(expRes.data as Expense[]);
-        if (budRes.data) setBudgets(budRes.data as Budget[]);
+        if (expRes.data) {
+          const mapped = expRes.data.map((ex: any) => ({ ...ex, date: ex.created_at || ex.date }));
+          setExpenses(mapped as Expense[]);
+          localStorage.setItem('expenses', JSON.stringify(mapped));
+        }
+        if (budRes.data) {
+          setBudgets(budRes.data as Budget[]);
+          localStorage.setItem('budgets', JSON.stringify(budRes.data));
+        }
         if (setRes.data) {
           setSettings({ ...DEFAULT_SETTINGS, ...setRes.data });
+          localStorage.setItem('settings', JSON.stringify({ ...DEFAULT_SETTINGS, ...setRes.data }));
         } else {
+          // Create default settings if they don't exist
           await supabase.from("settings").insert({ user_id: user.id, ...DEFAULT_SETTINGS });
         }
       } catch (err: any) {
         console.error("Failed to load user data", err);
+        const cachedExpenses = localStorage.getItem('expenses');
+        if (cachedExpenses) setExpenses(JSON.parse(cachedExpenses));
+        const cachedBudgets = localStorage.getItem('budgets');
+        if (cachedBudgets) setBudgets(JSON.parse(cachedBudgets));
+        const cachedSettings = localStorage.getItem('settings');
+        if (cachedSettings) setSettings(JSON.parse(cachedSettings));
+        toast.info("Offline mode active. Showing cached data.");
       } finally {
         setLoading(false);
       }
@@ -111,13 +139,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const newExpense = { ...e, id: crypto.randomUUID() };
     setExpenses((prev) => [newExpense, ...prev]);
 
-    const { error } = await supabase.from("expenses").insert({ ...newExpense, user_id: user.id });
+    const { date, ...rest } = newExpense;
+    const { error } = await supabase.from("expenses").insert({ ...rest, created_at: date, user_id: user.id });
     if (error) toast.error("Failed to save expense: " + error.message);
   };
 
   const updateExpense: AppContextValue["updateExpense"] = async (id, e) => {
     setExpenses((prev) => prev.map((it) => (it.id === id ? { ...it, ...e } : it)));
-    const { error } = await supabase.from("expenses").update(e).eq("id", id);
+    const { date, ...rest } = e as any;
+    const updatePayload = { ...rest, ...(date ? { created_at: date } : {}) };
+    const { error } = await supabase.from("expenses").update(updatePayload).eq("id", id);
     if (error) toast.error("Failed to update expense");
   };
 
