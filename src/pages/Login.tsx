@@ -53,7 +53,9 @@ export default function Login() {
       toast.error("Please enter your email first to reset password");
       return;
     }
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
     if (error) {
       toast.error(error.message);
     } else {
@@ -62,7 +64,12 @@ export default function Login() {
   };
 
   const social = async (provider: "google" | "facebook") => {
-    const { error } = await supabase.auth.signInWithOAuth({ provider });
+    const { error } = await supabase.auth.signInWithOAuth({ 
+      provider,
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
     if (error) toast.error(error.message);
   };
 
