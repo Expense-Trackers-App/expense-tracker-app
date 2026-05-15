@@ -4,7 +4,6 @@ A modern, highly-polished, and cloud-synced personal finance tracking mobile app
 
 This application features a beautiful mobile-first design, interactive charts, and real-time database syncing to help you take control of your financial life seamlessly across all your devices.
 
-# 📄 [Expense Tracker App SDLC Document](https://drive.google.com/file/d/1-V60WEIjtJFCk1CEByx8lITHfn5VFUwM/view?usp=sharing)
 
 ## ✨ Key Features
 
@@ -27,6 +26,36 @@ This application features a beautiful mobile-first design, interactive charts, a
 - **Backend & Database**: Supabase (PostgreSQL, Auth, Storage, RLS)
 - **Internationalization**: i18n
 - **Forms & Validation**: React Hook Form, Zod
+
+# 📄 [Expense Tracker App SDLC Document](https://drive.google.com/file/d/1-V60WEIjtJFCk1CEByx8lITHfn5VFUwM/view?usp=sharing)
+
+## 📱 Expense Tracker App
+
+A simple and easy-to-use Expense Tracker application to manage your daily income and expenses.
+
+---
+
+## 🌐 Web App
+
+Try the live web version here:
+
+👉 [Open Web App](https://expense-tracker-app-azure-nu.vercel.app/signup)
+
+---
+
+## 📥 Download Android App
+
+Download and install the Android APK below:
+
+👉 [Download APK](https://raw.githubusercontent.com/Expense-Trackers-App/expense-tracker-app/main/app/app-debug.apk)
+
+---
+
+## 📲 How to Install APK
+1. Click the download link above  
+2. Open the APK file on your Android device  
+3. Enable **Install from unknown sources** if asked  
+4. Install and start using the app 🎉
 
 ## 🚀 Getting Started
 
@@ -85,3 +114,8 @@ This app uses Supabase Row Level Security (RLS). Every database query automatica
 
 ---
 *Built with modern web technologies.*
+## 📱 Mobile App Repository
+
+You can explore the source code of the Android mobile app here:
+
+👉 [Expense Tracker Mobile App Repo](https://github.com/Expense-Trackers-App/expense-tracker-mobile-app)
